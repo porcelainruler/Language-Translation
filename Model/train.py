@@ -150,6 +150,7 @@ def epoch_time(start_time, end_time):
     return elapsed_mins, elapsed_secs
 
 
+'''
 # Training Starts Here
 N_EPOCHS = config.EPOCH
 CLIP = 0.1
@@ -174,4 +175,4 @@ for epoch in range(N_EPOCHS):
     print(f'Epoch: {epoch + 1:02} | Time: {epoch_mins}m {epoch_secs}s')
     print(f'\tTrain Loss: {train_loss:.3f} | Train PPL: {math.exp(train_loss):7.3f}')
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. PPL: {math.exp(valid_loss):7.3f}')
-
+'''

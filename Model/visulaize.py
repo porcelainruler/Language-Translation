@@ -9,6 +9,11 @@ import warnings
 # For ignoring warnings
 warnings.filterwarnings("ignore")
 
+# Data Visualization Info
+epochs = []
+trainlosses = []
+vallosses = []
+
 
 # For Plotting Train and Valid Loss Plot
 def plot(epochs: list, trainlosses: list, vallosses: list):
