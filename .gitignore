@@ -1,0 +1,7 @@
+.idea
+Model/EngHindiDataPreprocess/IITB.en-hi.en
+Model/EngHindiDataPreprocess/IITB.en-hi.hi
+Model/Trained_Models
+Model/translate-model.pt
+Model/.data
+Model/__pycache__
