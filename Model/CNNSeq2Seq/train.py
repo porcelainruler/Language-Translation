@@ -10,9 +10,9 @@ import math
 import time
 
 # Import Data Pre-process Files and Config File
-from Model import data_preprocess as dp
-from Model import config
-from Model import model
+from Model.CNNSeq2Seq import data_preprocess as dp
+from Model.CNNSeq2Seq import config
+from Model.CNNSeq2Seq import model
 
 import warnings
 

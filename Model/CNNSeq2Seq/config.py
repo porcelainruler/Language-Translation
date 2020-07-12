@@ -1,4 +1,4 @@
-from Model import data_preprocess as dp
+from Model.CNNSeq2Seq import data_preprocess as dp
 
 # Just for not producing error Need to Remove SRC & TRG with corr. value during Data Pre-Processing:
 

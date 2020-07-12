@@ -1,7 +1,7 @@
 .idea
 Model/EngHindiDataPreprocess/IITB.en-hi.en
 Model/EngHindiDataPreprocess/IITB.en-hi.hi
-Model/Trained_Models
-Model/translate-model.pt
-Model/.data
-Model/__pycache__
+Model/CNNSeq2Seq/Trained_Models
+Model/CNNSeq2Seq/translate-model.pt
+Model/CNNSeq2Seq/.data
+Model/CNNSeq2Seq/__pycache__

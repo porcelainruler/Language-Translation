@@ -1,11 +1,11 @@
 import os
 import warnings
 import torch
-from Model.train import model
-from Model.train import evaluate, test_iterator, criterion, train_data, device
-from Model.sentence_eval import translate_sentence
-from Model.visulaize import display_attention
-from Model.data_preprocess import SRC, TRG
+from Model.CNNSeq2Seq.train import model
+from Model.CNNSeq2Seq.train import evaluate, test_iterator, criterion, train_data, device
+from Model.CNNSeq2Seq.sentence_eval import translate_sentence
+from Model.CNNSeq2Seq.visulaize import display_attention
+from Model.CNNSeq2Seq.data_preprocess import SRC, TRG
 import math
 
 # For ignoring warnings

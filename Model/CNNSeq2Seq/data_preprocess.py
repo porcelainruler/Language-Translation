@@ -1,6 +1,5 @@
-import torch
 from torchtext.datasets import Multi30k
-from torchtext.data import Field, BucketIterator
+from torchtext.data import Field
 
 import spacy
 import warnings

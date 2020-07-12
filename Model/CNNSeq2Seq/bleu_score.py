@@ -1,5 +1,5 @@
 from torchtext.data.metrics import bleu_score
-from Model import sentence_eval
+from Model.CNNSeq2Seq import sentence_eval
 
 
 # For calculating BLEU Score
