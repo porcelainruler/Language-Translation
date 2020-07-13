@@ -116,29 +116,25 @@ def convert_seq_to_int(data: list, flag: bool):
 
 # hin_vocab_read = load_data_sp('monolingual.hi')
 hin_read = load_data_sp('IITB.en-hi.hi')
-HIN_TOKEN_FORM = tokenizer(hin_read, flag=True, max_length=50)
+HIN_TOKEN_FORM = tokenizer(hin_read, flag=True, max_length=10000)
 create_hindi_vocab(HIN_TOKEN_FORM)
 
 
 eng_read = load_data_sp('IITB.en-hi.en')
-ENG_TOKEN_FORM = tokenizer(eng_read, flag=True, max_length=50)
+ENG_TOKEN_FORM = tokenizer(eng_read, flag=True, max_length=10000)
 create_eng_vocab(ENG_TOKEN_FORM)
 
 
-print(eng_vocab_textToInt)
-print(hin_vocab_textToInt)
+print('English Vocab:', eng_vocab_textToInt)
+print('Hindi Vocab:', hin_vocab_textToInt)
 
 ENG_DATA = convert_seq_to_int(ENG_TOKEN_FORM, flag=True)
 HIN_DATA = convert_seq_to_int(HIN_TOKEN_FORM, flag=False)
 
+print('English Vocab Size:', max(eng_vocab_intToText.keys()))
+print('Hindi Vocab Size:', max(hin_vocab_intToText.keys()))
+
 print(ENG_DATA)
 print(HIN_DATA)
 
-# ENG = tokenizer(eng_read, max_length=50)
-# HIN = tokenizer(hin_read, max_length=50)
 
-
-# w1 = HIN[0][1]
-# w2 = HIN[0][1]
-
-# print(w1, w2, (w1==w2))
