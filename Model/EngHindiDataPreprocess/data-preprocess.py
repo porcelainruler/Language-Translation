@@ -2,6 +2,7 @@ import gzip
 import codecs
 import math
 from Model.EngHindiDataPreprocess import config
+from Model.EngHindiDataPreprocess import HindiTokenizer as HIN_Tok
 
 
 def load_data_sp(path):
@@ -115,10 +116,18 @@ def convert_seq_to_int(data: list, flag: bool):
 
 
 # hin_vocab_read = load_data_sp('monolingual.hi')
+'''
 hin_read = load_data_sp('IITB.en-hi.hi')
 HIN_TOKEN_FORM = tokenizer(hin_read, flag=True, max_length=10000)
 create_hindi_vocab(HIN_TOKEN_FORM)
+'''
+HIN_T = HIN_Tok.Tokenizer()
+text = HIN_T.read_from_file(filename='test_hin.hi')
+HIN_TOKEN_FORM = HIN_T.tokenize()
 
+print(HIN_TOKEN_FORM)
+
+exit(0)
 
 eng_read = load_data_sp('IITB.en-hi.en')
 ENG_TOKEN_FORM = tokenizer(eng_read, flag=True, max_length=10000)

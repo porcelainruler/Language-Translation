@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import codecs
 import re
+from string import digits
 
 
 class Tokenizer:
     '''class for tokenizer'''
 
-    def __init__(self, text=None):
+    def __init__(self, text: str = None):
         if text is not None:
             self.text = text
             self.clean_text()
@@ -18,17 +19,18 @@ class Tokenizer:
         self.final_list = []
         self.final_tokens = []
 
-    # self.final_tokens=[]
-
     def read_from_file(self, filename):
         f = codecs.open(filename, encoding='utf-8')
         self.text = f.read()
         self.clean_text()
+        return self.text
 
     def generate_sentences(self):
         '''generates a list of sentences'''
         text = self.text
-        self.sentences = text.split(u"।")
+        self.sentences = text.split('\n')
+
+        return self.sentences
 
     def print_sentences(self, sentences=None):
         if sentences:
@@ -38,27 +40,45 @@ class Tokenizer:
             for i in self.sentences:
                 print(i.encode('utf-8'))
 
+    def remove_integer(self):
+        # using translate and digits
+        # to remove numeric digits from string
+        remove_digits = str.maketrans('', '', digits)
+        res = self.text.translate(remove_digits)
+
+        self.text = res
+
     def clean_text(self):
         '''not working'''
         text = self.text
+
+        self.remove_integer()
+
         text = re.sub(r'(\d+)', r'', text)
-        text = text.replace(u',', '')
-        text = text.replace(u'"', '')
-        text = text.replace(u'(', '')
-        text = text.replace(u')', '')
-        text = text.replace(u'"', '')
-        text = text.replace(u':', '')
-        text = text.replace(u"'", '')
-        text = text.replace(u"‘‘", '')
-        text = text.replace(u"’’", '')
-        text = text.replace(u"''", '')
-        text = text.replace(u".", '')
+        text = text.replace(',', ' ')
+        text = text.replace('\"', ' ')
+        text = text.replace('(', ' ')
+        text = text.replace(')', ' ')
+        text = text.replace('\"', ' ')
+        text = text.replace(':', ' ')
+        text = text.replace("\'", ' ')
+        text = text.replace("‘‘", ' ')
+        text = text.replace("’’", ' ')
+        text = text.replace("''", ' ')
+        text = text.replace(".", ' ')
+        text = text.replace("|", ' ')
+        text = text.replace("-", ' ')
         self.text = text
+
+        return self.text
 
     def remove_only_space_words(self):
 
         tokens = filter(lambda tok: tok.strip(), self.tokens)
-        self.tokens = tokens
+        tok_arr = list()
+        for tok in tokens:
+            tok_arr.append(tok)
+        self.tokens = tok_arr
 
     def hyphenated_tokens(self):
 
@@ -77,13 +97,17 @@ class Tokenizer:
         sentences_list = self.sentences
         tokens = []
         for each in sentences_list:
+            each.replace('\r', '')
             word_list = each.split(' ')
-            tokens = tokens + word_list
+            tokens = tokens + word_list + ['SEPL|||SEPR']
         self.tokens = tokens
         # remove words containing spaces
         self.remove_only_space_words()
+
         # remove hyphenated words
-        self.hyphenated_tokens()
+        # self.hyphenated_tokens()
+
+        return self.tokens
 
     def print_tokens(self, print_list=None):
         '''done'''
@@ -96,7 +120,7 @@ class Tokenizer:
 
     def tokens_count(self):
         '''done'''
-        return self.tokens.__sizeof__()
+        return len(self.tokens)
 
     def sentence_count(self):
         '''done'''
@@ -111,6 +135,7 @@ class Tokenizer:
         if not self.sentences:
             self.generate_sentences()
         sentence = self.sentences
+
         concordance_sent = []
         for each in sentence:
             each = each
@@ -134,8 +159,7 @@ class Tokenizer:
     def print_freq_dict(self, freq):
         '''done'''
         for i in freq.keys():
-            print
-            i.encode('utf-8'), ',', freq[i]
+            print(i.encode('utf-8'), ',', freq[i])
 
     def generate_stem_words(self, word):
         suffixes = {
@@ -159,21 +183,12 @@ class Tokenizer:
 
     def generate_stem_dict(self):
         '''returns a dictionary of stem words for each token'''
-        # suffixes = {
-        #   				1: ["ो", "े", "ू", "ु", "ी", "ि", "ा"],
-        #   				2: ["कर", "ाओ", "िए", "ाई", "ाए", "ने", "नी", "ना", "ते", "ीं", "ती", "ता", "ाँ", "ां", "ों", "ें"],
-        #   				3: ["ाकर", "ाइए", "ाईं", "ाया", "ेगी", "ेगा", "ोगी", "ोगे", "ाने", "ाना", "ाते", "ाती", "ाता", "तीं", "ाओं", "ाएं", "ुओं", "ुएं", "ुआं"],
-        #   				4: ["ाएगी", "ाएगा", "ाओगी", "ाओगे", "एंगी", "ेंगी", "एंगे", "ेंगे", "ूंगी", "ूंगा", "ातीं", "नाओं", "नाएं", "ताओं", "ताएं", "ियाँ", "ियों", "ियां"],
-        #   				5: ["ाएंगी", "ाएंगे", "ाऊंगी", "ाऊंगा", "ाइयाँ", "ाइयों", "ाइयां"],
-        # 			}
 
         stem_word = {}
         if not self.tokens:
             self.tokenize()
         for each_token in self.tokens:
-            # print type(each_token)
             temp = self.generate_stem_words(each_token)
-            # print temp
             stem_word[each_token] = temp
             self.stemmed_word.append(temp)
 
@@ -191,27 +206,32 @@ class Tokenizer:
         return tokens
 
 
+'''
 if __name__ == "__main__":
-    t = Tokenizer(
-        '''वाशिंगटन: दुनिया के सबसे शक्तिशाली देश के राष्ट्रपति बराक ओबामा ने प्रधानमंत्री नरेंद्र मोदी के संदर्भ में 'टाइम' पत्रिका में लिखा, "नरेंद्र मोदी ने अपने 
-        बाल्यकाल में अपने परिवार की सहायता करने के लिए अपने पिता की चाय बेचने में मदद की थी। आज वह दुनिया के सबसे बड़े लोकतंत्र के नेता हैं और गरीबी 
-        से प्रधानमंत्री तक की उनकी जिंदगी की कहानी भारत के उदय की गतिशीलता और क्षमता को परिलक्षित करती है।''')
+    #t = Tokenizer(
+    #    वाशिंगटन: दुनिया के सबसे शक्तिशाली देश के राष्ट्रपति बराक ओबामा ने प्रधानमंत्री नरेंद्र मोदी के संदर्भ में 'टाइम' पत्रिका में लिखा, "नरेंद्र मोदी ने अपने 
+    #    बाल्यकाल में अपने परिवार की सहायता करने के लिए अपने पिता की चाय बेचने में मदद की थी। आज वह दुनिया के सबसे बड़े लोकतंत्र के नेता हैं और गरीबी 
+    #    से प्रधानमंत्री तक की उनकी जिंदगी की कहानी भारत के उदय की गतिशीलता और क्षमता को परिलक्षित करती है।)
     # t=Tokenizer()
     # t.read_from_file('sample.txt')
     # print type(t.text)
     # y=clean(t.text)
     # print y
-    t.generate_sentences()
-    # t.print_sentences()
-    t.tokenize()
-    # t.print_tokens()
-    f = t.generate_freq_dict()
-    # t.print_freq_dict(f)
+    sent = t.clean_text()
+    print(sent)
+
+    sent = t.generate_sentences()
+    print(sent)
+    sent = t.tokenize()
+    print(sent)
+    freq_dict = t.generate_freq_dict()
+    print(freq_dict)
     s = t.concordance('बातों')
-    # t.print_sentences(s)
     f = t.generate_stem_dict()
+    print(f)
     # for i in f.keys():
     # 	print i.encode('utf-8'),f[i].encode('utf-8')
     # z = t.remove_stop_words()
     t.print_tokens(t.final_tokens)
     print(t.sentence_count(), t.tokens_count(), t.len_text())
+'''
