@@ -2,6 +2,10 @@
 Model/EngHindiDataPreprocess/IITB.en-hi.en
 Model/EngHindiDataPreprocess/IITB.en-hi.hi
 Model/EngHindiDataPreprocess/monolingual.hi
+Model/EngHindiDataPreprocess/hindencorp05.plaintext
+Model/EngHindiDataPreprocess/checker.txt
+Model/EngHindiDataPreprocess/english_vocab.txt
+Model/EngHindiDataPreprocess/hindi_vocab.txt
 Model/EngHindiDataPreprocess/__pycache__
 Model/CNNSeq2Seq/Trained_Models
 Model/CNNSeq2Seq/translate-model.pt

@@ -1,6 +1,6 @@
 import codecs
 import math
-from Model.EngHindiDataPreprocess import config
+from Model.EngHindiDataPreprocess import config, EnglishTokenizer as ENG_Tok, HindiTokenizer as HIN_TOK
 from nltk import word_tokenize
 
 
@@ -116,14 +116,21 @@ def convert_seq_to_int(data: list, flag: bool):
 
 
 # hin_vocab_read = load_data_sp('monolingual.hi')
-hin_read = load_data_sp('IITB.en-hi.hi')
-HIN_TOKEN_FORM = tokenizer(hin_read, flag=False)
-create_hindi_vocab(HIN_TOKEN_FORM)
+# hin_read = load_data_sp('IITB.en-hi.hi')
+# HIN_TOKEN_FORM = tokenizer(hin_read, flag=False)
+# create_hindi_vocab(HIN_TOKEN_FORM)
 
 
-eng_read = load_data_sp('IITB.en-hi.en')
-ENG_TOKEN_FORM = tokenizer(eng_read, flag=True, max_length=100000)
-create_eng_vocab(ENG_TOKEN_FORM)
+# eng_read = load_data_sp('IITB.en-hi.en')
+# ENG_TOKEN_FORM = tokenizer(eng_read, flag=True, max_length=100000)
+# create_eng_vocab(ENG_TOKEN_FORM)
+
+eng = ENG_Tok.EnglishTokenizer()
+eng_sent = eng.read_from_file(path='ENG_CUSTOM.EN')
+eng_tok = eng.tokenize()
+print(eng_tok[100])
+create_eng_vocab(eng_tok)
+print(eng_vocab_textToInt)
 
 print('Vocab Creation Done for Both')
 
@@ -141,7 +148,7 @@ def vocab_creator(vocab_dict: dict, flag: bool):
     out.close()
 
 
-vocab_creator(hin_vocab_textToInt, flag=True)
+# vocab_creator(hin_vocab_textToInt, flag=True)
 vocab_creator(eng_vocab_textToInt, flag=False)
 
 # print('English Vocab:', eng_vocab_textToInt)
