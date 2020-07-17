@@ -99,10 +99,11 @@ class Tokenizer:
         for each in sentences_list:
             each.replace('\r', '')
             word_list = each.split(' ')
-            tokens = tokens + word_list + ['SEPL|||SEPR']
+            print(word_list)
+            tokens.append(word_list)
         self.tokens = tokens
         # remove words containing spaces
-        self.remove_only_space_words()
+        # self.remove_only_space_words()
 
         # remove hyphenated words
         # self.hyphenated_tokens()
