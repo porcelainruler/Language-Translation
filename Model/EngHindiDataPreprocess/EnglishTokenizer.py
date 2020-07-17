@@ -18,7 +18,7 @@ class EnglishTokenizer:
         # Data Specific Corrections:
         src = src.replace(' _ ', '')
         src = src.replace('_ ', '')
-        src = src.replace(' - ', '')
+        src = src.replace(' - ', ' ')
         src = src.replace('...', ' ')
 
         # Numeric and {12th --> 1, 2, th}
@@ -33,16 +33,17 @@ class EnglishTokenizer:
         src = src.replace('8th', '8th ')
         src = src.replace('9th', '9th ')
 
-        src = src.replace('0', '0 ')
-        src = src.replace('1', '1 ')
-        src = src.replace('2', '2 ')
-        src = src.replace('3', '3 ')
-        src = src.replace('4', '4 ')
-        src = src.replace('5', '5 ')
-        src = src.replace('6', '6 ')
-        src = src.replace('7', '7 ')
-        src = src.replace('8', '8 ')
-        src = src.replace('9', '9 ')
+        # To be Checked for Size and Accuracy    --Temporary Removed
+        # src = src.replace('0', '0 ')
+        # src = src.replace('1', '1 ')
+        # src = src.replace('2', '2 ')
+        # src = src.replace('3', '3 ')
+        # src = src.replace('4', '4 ')
+        # src = src.replace('5', '5 ')
+        # src = src.replace('6', '6 ')
+        # src = src.replace('7', '7 ')
+        # src = src.replace('8', '8 ')
+        # src = src.replace('9', '9 ')
 
         # Punctuation Replace
         src = src.replace('\\', ' ')
@@ -106,10 +107,10 @@ class EnglishTokenizer:
         return src
 
     def tokenize(self) -> list:
-        assert len(self.sent_list) != 0, 'Please Either provide Sentnce to Class constructor while initialization or' \
+        assert len(self.sent_list) != 0, 'Please Either provide Sentence to Class constructor while initialization or' \
                                          ' call read_from_file function'
 
-        ff_check = codecs.open('checker.txt', encoding='utf-8', mode='w')
+        ff_check = codecs.open('checker_eng.txt', encoding='utf-8', mode='w')
         tok_list = list()
         for sent in self.sent_list:
             sent = sent.lower()
@@ -130,6 +131,7 @@ class EnglishTokenizer:
         return self.tokens
 
 
+# Testing:
 # source = "What'the/fuck is I'm this"
 # tok = EnglishTokenizer(source)
 # print(tok.tokenize())

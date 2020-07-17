@@ -120,17 +120,11 @@ def convert_seq_to_int(data: list, flag: bool):
 # HIN_TOKEN_FORM = tokenizer(hin_read, flag=False)
 # create_hindi_vocab(HIN_TOKEN_FORM)
 
-
-# eng_read = load_data_sp('IITB.en-hi.en')
-# ENG_TOKEN_FORM = tokenizer(eng_read, flag=True, max_length=100000)
-# create_eng_vocab(ENG_TOKEN_FORM)
-
-eng = ENG_Tok.EnglishTokenizer()
-eng_sent = eng.read_from_file(path='ENG_CUSTOM.EN')
-eng_tok = eng.tokenize()
-print(eng_tok[100])
-create_eng_vocab(eng_tok)
-print(eng_vocab_textToInt)
+# English Dataset Tokenization and Vocab Creation
+ENG_TOKENIZER = ENG_Tok.EnglishTokenizer()
+eng_read = ENG_TOKENIZER.read_from_file(path='mlc_train.hi-en.en')
+ENG_TOKENS = ENG_TOKENIZER.tokenize()
+create_eng_vocab(ENG_TOKENS)
 
 print('Vocab Creation Done for Both')
 
@@ -148,11 +142,16 @@ def vocab_creator(vocab_dict: dict, flag: bool):
     out.close()
 
 
-# vocab_creator(hin_vocab_textToInt, flag=True)
+# Vocab txt File Creation for both English and Hindi
 vocab_creator(eng_vocab_textToInt, flag=False)
+# vocab_creator(hin_vocab_textToInt, flag=True)
 
-# print('English Vocab:', eng_vocab_textToInt)
+print('English Vocab:', eng_vocab_textToInt)
 # print('Hindi Vocab:', hin_vocab_textToInt)
 
-# ENG_DATA = convert_seq_to_int(ENG_TOKEN_FORM, flag=True)
+ENG_DATA = convert_seq_to_int(ENG_TOKENS, flag=True)
 # HIN_DATA = convert_seq_to_int(HIN_TOKEN_FORM, flag=False)
+
+# Check for Correct Tokenization
+# print(ENG_DATA)
+# print(HIN_DATA)
