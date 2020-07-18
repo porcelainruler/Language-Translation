@@ -2,21 +2,19 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from torch.utils.data.dataset import Dataset, TensorDataset
+from torch.utils.data.dataset import TensorDataset
 from torch.utils.data import DataLoader
-
-from torchtext.data import BucketIterator
 
 import random
 import math
 import time
 
-# Import Data Pre-process Files and Config File
-# from Model.CNNSeq2Seq import data_preprocess as dp
-from Model.CNNSeq2Seq import config
+# Import Data Pre-process Files, Model, and Config File
+from Model.EngHindiDataPreprocess import config
 from Model.CNNSeq2Seq import model
 from Model.EngHindiDataPreprocess.eng_hin_vocab_creator import ENG_DATA, HIN_DATA
 
+# Import Train-Test Splitter
 from sklearn.model_selection import train_test_split
 
 import warnings
@@ -36,38 +34,27 @@ torch.backends.cudnn.deterministic = True
 # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 device = torch.device('cpu')
 
+# Set Batch Size
 BATCH_SIZE = config.BATCH_SIZE
 
-np_eng = np.array(ENG_DATA)
-np_hin = np.array(HIN_DATA)
-
+# Convert Integer Dataset to Tensor
 tensor_eng = torch.tensor(ENG_DATA, dtype=torch.int32)
 tensor_hin = torch.tensor(HIN_DATA, dtype=torch.int32)
 
+# Split Dataset to Train and Validation Set
 X_train, X_val, y_train, y_val = train_test_split(tensor_eng, tensor_hin, test_size=0.1)
 
+# Convert the Split Dataset to Dataset Type
 train_dataset = TensorDataset(X_train, y_train)
 valid_dataset = TensorDataset(X_val, y_val)
 
+# Make Loader or Batchify the Split Datasets
 train_loader = DataLoader(train_dataset, batch_size=config.BATCH_SIZE, drop_last=True, num_workers=0)
 valid_loader = DataLoader(valid_dataset, batch_size=config.BATCH_SIZE, drop_last=True, num_workers=0)
 
-print(len(X_train), len(X_val))
-print(len(y_train), len(y_val))
+# exit(0)
 
-# print(X_val)
-print('------------------------------------------------------------------------')
-# print(train_dataset[0])
-
-count = 0
-for batch in valid_loader:
-    count += 1
-    print(batch)
-
-print(count, len(X_val)//config.BATCH_SIZE, len(X_train)//config.BATCH_SIZE)
-exit(0)
-
-# Setting up Model Paramters and Initializing the Model
+# Setting up Model Parameters and Initializing the Model
 INPUT_DIM = config.INPUT_DIM
 OUTPUT_DIM = config.OUTPUT_DIM
 EMB_DIM = config.EMB_DIM
@@ -93,18 +80,23 @@ def count_parameters(model):
 
 # print(f'The model has {count_parameters(model):,} trainable parameters')
 
+# Setting up Optimizer and Loss function for Training
 optimizer = optim.Adam(model.parameters())
 criterion = nn.CrossEntropyLoss(ignore_index=TRG_PAD_IDX)
 
 
+# Defining Training Step
 def train(model, iterator, optimizer, criterion, clip):
     model.train()
 
     epoch_loss = 0
 
-    for i, batch in enumerate(iterator):
-        src = batch.src
-        trg = batch.trg
+    for batch in iterator:
+        src = batch[0]
+        trg = batch[1]
+
+        src = src.type(torch.LongTensor)
+        trg = trg.type(torch.LongTensor)
 
         optimizer.zero_grad()
 
@@ -136,15 +128,19 @@ def train(model, iterator, optimizer, criterion, clip):
     return epoch_loss / len(iterator)
 
 
+# Defining Validation / Evaluation Step
 def evaluate(model, iterator, criterion):
     model.eval()
 
     epoch_loss = 0
 
     with torch.no_grad():
-        for i, batch in enumerate(iterator):
-            src = batch.src
-            trg = batch.trg
+        for batch in iterator:
+            src = batch[0]
+            trg = batch[1]
+
+            src = src.type(torch.LongTensor)
+            trg = trg.type(torch.LongTensor)
 
             output, _ = model(src, trg[:, :-1])
 
@@ -175,7 +171,6 @@ def epoch_time(start_time, end_time):
     return elapsed_mins, elapsed_secs
 
 
-'''
 # Training Starts Here
 N_EPOCHS = config.EPOCH
 CLIP = 0.1
@@ -186,18 +181,26 @@ for epoch in range(N_EPOCHS):
 
     start_time = time.time()
 
-    train_loss = train(model, train_iterator, optimizer, criterion, CLIP)
-    valid_loss = evaluate(model, valid_iterator, criterion)
+    train_loss = train(model, train_loader, optimizer, criterion, CLIP)
+
+    print(f'Train Batch No.-{epoch + 1} Done')
+
+    valid_loss = evaluate(model, valid_loader, criterion)
+
+    print(f'Validation Batch No.-{epoch + 1} Done')
 
     end_time = time.time()
 
     epoch_mins, epoch_secs = epoch_time(start_time, end_time)
 
-    if valid_loss < best_valid_loss:
+    if valid_loss < best_valid_loss or epoch % 2 == 0:
         best_valid_loss = valid_loss
-        torch.save(model.state_dict(), 'translate-model.pt')
+        if valid_loss < best_valid_loss and epoch % 2 != 0:
+            torch.save(model.state_dict(), 'translate-model-eng-hin.pt')
+        else:
+            torch.save(model.state_dict(), 'translate-model-eng-hin-extra-train.pt')
 
     print(f'Epoch: {epoch + 1:02} | Time: {epoch_mins}m {epoch_secs}s')
     print(f'\tTrain Loss: {train_loss:.3f} | Train PPL: {math.exp(train_loss):7.3f}')
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. PPL: {math.exp(valid_loss):7.3f}')
-'''
+

@@ -1,7 +1,7 @@
 # Just for not producing error Need to Remove SRC & TRG with corr. value during Data Pre-Processing:
 
-# INPUT_DIM = len(SRC.vocab)      # Not used here value to be modified
-# OUTPUT_DIM = len(TRG.vocab)     # Not used here value to be modified
+INPUT_DIM = 25616      # Not used here value to be modified
+OUTPUT_DIM = 37835     # Not used here value to be modified
 EMB_DIM = 256
 HID_DIM = 512  # each conv. layer has 2 * hid_dim filters
 ENC_LAYERS = 7  # number of conv. blocks / layers in encoder

@@ -131,6 +131,9 @@ hin_read = IND_TOK.get_sentences(filepath='mlc_train.hi-en.hi')
 HIN_TOKENS = IND_TOK.get_token(filepath='mlc_train.hi-en.hi')
 create_hindi_vocab(HIN_TOKENS)
 
+# Printing Vocab Size
+# print('English Vocab Size:', count_eng, 'Hindi Vocab Size:', count_hin)
+
 print('----------------------Vocab Creation Done for Both----------------------')
 
 
