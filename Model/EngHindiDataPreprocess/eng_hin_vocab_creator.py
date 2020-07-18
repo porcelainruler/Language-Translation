@@ -3,6 +3,7 @@ import math
 from Model.EngHindiDataPreprocess import config, EnglishTokenizer as ENG_Tok, HindiTokenizer as HIN_TOK, \
     IndicTokenizer as IND_TOK
 from nltk import word_tokenize
+from Model.EngHindiDataPreprocess import config
 
 
 def load_data_sp(path):
@@ -116,11 +117,7 @@ def convert_seq_to_int(data: list, flag: bool):
     return arr
 
 
-# hin_vocab_read = load_data_sp('monolingual.hi')
-# hin_read = load_data_sp('IITB.en-hi.hi')
-# HIN_TOKEN_FORM = tokenizer(hin_read, flag=False)
-# create_hindi_vocab(HIN_TOKEN_FORM)
-
+print('Vocab Creation in Progress...')
 
 # English Dataset Tokenization and Vocab Creation
 ENG_TOKENIZER = ENG_Tok.EnglishTokenizer()
@@ -150,18 +147,51 @@ def vocab_creator(vocab_dict: dict, flag: bool):
     out.close()
 
 
-# Vocab txt File Creation for both English and Hindi
-vocab_creator(eng_vocab_textToInt, flag=False)
-vocab_creator(hin_vocab_textToInt, flag=True)
+# Vocab txt File Creation for both English and Hindi                                <For Vocab Creation in txt>
+# vocab_creator(eng_vocab_textToInt, flag=False)
+# vocab_creator(hin_vocab_textToInt, flag=True)
 
 # Vocab Checker:
 # print('English Vocab:', eng_vocab_textToInt)
 # print('Hindi Vocab:', hin_vocab_textToInt)
 
+print('Data Conversion to Integer in Progress...')
+
+max_length = -math.inf
+
+
+def max_length_updator(seq: list):
+    global max_length
+
+    for sent in seq:
+        if len(sent) > max_length:
+            max_length = len(sent)
+
+
+def padding_seq(seq: list):
+    global max_length
+
+    for idx in range(len(seq)):
+        padding = [config.PAD_TOKEN_IDX]*int(max_length - len(seq[idx]))
+        seq[idx] = seq[idx] + padding
+
+    return seq
+
+
 # Sequence Tokens Convert to Integer Form
 ENG_DATA = convert_seq_to_int(ENG_TOKENS, flag=True)
 HIN_DATA = convert_seq_to_int(HIN_TOKENS, flag=False)
 
+# Updating Max-Length for Dataset Padding
+max_length_updator(ENG_DATA)
+max_length_updator(HIN_DATA)
+
+# Adding Padding to Dataset
+ENG_DATA = padding_seq(ENG_DATA)
+HIN_DATA = padding_seq(HIN_DATA)
+
+print('Data Conversion to Integer Done...')
+
 # Check for Correct Tokenization
-print(ENG_DATA[:20])
-print(HIN_DATA[:20])
+# print(ENG_DATA[:20])
+# print(HIN_DATA[:20])

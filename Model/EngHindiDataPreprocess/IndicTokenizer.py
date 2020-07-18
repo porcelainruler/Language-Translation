@@ -17,7 +17,8 @@ def get_sentences(filepath: str = ''):
         file_read = codecs.open(filename='mlc_train.hi-en.hi', encoding='utf-8').read()
         file_read = file_read.replace('\u200d', ' ')
 
-    sentences = sentence_tokenize.sentence_split(file_read, lang='hi')
+    # sentences = sentence_tokenize.sentence_split(file_read, lang='hi')
+    sentences = file_read.split('\n')
 
     return sentences
 

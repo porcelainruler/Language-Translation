@@ -1,6 +1,7 @@
 .idea
 Model/EngHindiDataPreprocess/temp_datasets
 Model/EngHindiDataPreprocess/__pycache__
+Model/EngHindiDataPreprocess/.data
 Model/EngHindiDataPreprocess/hindencorp05.plaintext
 Model/EngHindiDataPreprocess/mlc_train.hi-en.en
 Model/EngHindiDataPreprocess/mlc_train.hi-en.hi
