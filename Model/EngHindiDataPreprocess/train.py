@@ -56,7 +56,7 @@ print(len(X_train), len(X_val))
 print(len(y_train), len(y_val))
 
 # print(X_val)
-print('-----------------------------------------------------------------------------')
+print('------------------------------------------------------------------------')
 # print(train_dataset[0])
 
 count = 0
@@ -65,20 +65,6 @@ for batch in valid_loader:
     print(batch)
 
 print(count, len(X_val)//config.BATCH_SIZE, len(X_train)//config.BATCH_SIZE)
-exit(0)
-
-train_iterator, valid_iterator, test_iterator = BucketIterator.splits((train_data, valid_data, test_data),
-                                                                      batch_size=BATCH_SIZE,
-                                                                      device=device)
-
-SRC, TRG = dp.get_vocab()
-
-print()
-for i, batch in enumerate(train_iterator):
-    src = batch.src
-    trg = batch.trg
-    print(src, trg)
-
 exit(0)
 
 # Setting up Model Paramters and Initializing the Model
@@ -92,7 +78,7 @@ ENC_KERNEL_SIZE = config.ENC_KERNEL_SIZE  # must be odd!
 DEC_KERNEL_SIZE = config.DEC_KERNEL_SIZE  # can be even or odd
 ENC_DROPOUT = config.ENC_DROPOUT
 DEC_DROPOUT = config.DEC_DROPOUT
-TRG_PAD_IDX = TRG.vocab.stoi[TRG.pad_token]
+TRG_PAD_IDX = config.PAD_TOKEN_IDX
 
 enc = model.Encoder(INPUT_DIM, EMB_DIM, HID_DIM, ENC_LAYERS, ENC_KERNEL_SIZE, ENC_DROPOUT, device)
 dec = model.Decoder(OUTPUT_DIM, EMB_DIM, HID_DIM, DEC_LAYERS, DEC_KERNEL_SIZE, DEC_DROPOUT, TRG_PAD_IDX, device)
@@ -108,7 +94,7 @@ def count_parameters(model):
 # print(f'The model has {count_parameters(model):,} trainable parameters')
 
 optimizer = optim.Adam(model.parameters())
-criterion = nn.CrossEntropyLoss(ignore_index = TRG_PAD_IDX)
+criterion = nn.CrossEntropyLoss(ignore_index=TRG_PAD_IDX)
 
 
 def train(model, iterator, optimizer, criterion, clip):
