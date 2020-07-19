@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
 import numpy as np
 from torch.utils.data.dataset import TensorDataset
 from torch.utils.data import DataLoader
@@ -82,9 +83,14 @@ def count_parameters(model):
 
 # Setting up Optimizer and Loss function for Training
 optimizer = optim.Adam(model.parameters())
+# scheduler = StepLR(optimizer, step_size=3, gamma=0.1)
 criterion = nn.CrossEntropyLoss(ignore_index=TRG_PAD_IDX)
 
+# Comment Out exit(0) Only in case to Train the model
+# exit(0)
 
+
+'''
 # Defining Training Step
 def train(model, iterator, optimizer, criterion, clip):
     model.train()
@@ -203,4 +209,4 @@ for epoch in range(N_EPOCHS):
     print(f'Epoch: {epoch + 1:02} | Time: {epoch_mins}m {epoch_secs}s')
     print(f'\tTrain Loss: {train_loss:.3f} | Train PPL: {math.exp(train_loss):7.3f}')
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. PPL: {math.exp(valid_loss):7.3f}')
-
+'''
