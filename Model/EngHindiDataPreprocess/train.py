@@ -13,15 +13,20 @@ import time
 # Import Data Pre-process Files, Model, and Config File
 from Model.EngHindiDataPreprocess import config
 from Model.CNNSeq2Seq import model
-from Model.EngHindiDataPreprocess.eng_hin_vocab_creator import ENG_DATA, HIN_DATA
+from Model.EngHindiDataPreprocess.eng_hin_vocab_creator import ENG_DATA_PADDED, HIN_DATA_PADDED
 
 # Import Train-Test Splitter
 from sklearn.model_selection import train_test_split
+
+# Manually Cleaning / Deleting Unused Tensors
+# import gc
 
 import warnings
 
 # For ignoring warnings
 warnings.filterwarnings("ignore")
+
+torch.cuda.empty_cache()
 
 # Setting Parameters
 SEED = 1234
@@ -39,8 +44,8 @@ device = torch.device('cpu')
 BATCH_SIZE = config.BATCH_SIZE
 
 # Convert Integer Dataset to Tensor
-tensor_eng = torch.tensor(ENG_DATA, dtype=torch.int32)
-tensor_hin = torch.tensor(HIN_DATA, dtype=torch.int32)
+tensor_eng = torch.tensor(ENG_DATA_PADDED, dtype=torch.int32)
+tensor_hin = torch.tensor(HIN_DATA_PADDED, dtype=torch.int32)
 
 # Split Dataset to Train and Validation Set
 X_train, X_val, y_train, y_val = train_test_split(tensor_eng, tensor_hin, test_size=0.1)
@@ -60,8 +65,8 @@ INPUT_DIM = config.INPUT_DIM
 OUTPUT_DIM = config.OUTPUT_DIM
 EMB_DIM = config.EMB_DIM
 HID_DIM = config.HID_DIM  # each conv. layer has 2 * hid_dim filters
-ENC_LAYERS = config.ENC_LAYERS  # number of conv. blocks in encoder
-DEC_LAYERS = config.DEC_LAYERS  # number of conv. blocks in decoder
+ENC_LAYERS = 12  # number of conv. blocks in encoder
+DEC_LAYERS = 12  # number of conv. blocks in decoder
 ENC_KERNEL_SIZE = config.ENC_KERNEL_SIZE  # must be odd!
 DEC_KERNEL_SIZE = config.DEC_KERNEL_SIZE  # can be even or odd
 ENC_DROPOUT = config.ENC_DROPOUT
@@ -82,7 +87,7 @@ def count_parameters(model):
 # print(f'The model has {count_parameters(model):,} trainable parameters')
 
 # Setting up Optimizer and Loss function for Training
-optimizer = optim.Adam(model.parameters())
+optimizer = optim.Adam(model.parameters(), lr=config.Learning_Rate)
 # scheduler = StepLR(optimizer, step_size=3, gamma=0.1)
 criterion = nn.CrossEntropyLoss(ignore_index=TRG_PAD_IDX)
 
@@ -90,7 +95,6 @@ criterion = nn.CrossEntropyLoss(ignore_index=TRG_PAD_IDX)
 # exit(0)
 
 
-'''
 # Defining Training Step
 def train(model, iterator, optimizer, criterion, clip):
     model.train()
@@ -101,8 +105,8 @@ def train(model, iterator, optimizer, criterion, clip):
         src = batch[0]
         trg = batch[1]
 
-        src = src.type(torch.LongTensor)
-        trg = trg.type(torch.LongTensor)
+        src = src.type(torch.LongTensor).to(device)
+        trg = trg.type(torch.LongTensor).to(device)
 
         optimizer.zero_grad()
 
@@ -129,6 +133,11 @@ def train(model, iterator, optimizer, criterion, clip):
 
         print(loss.item())
 
+        # Deleting Used Tensors
+        # del src
+        # del trg
+        # gc.collect()
+
         epoch_loss += loss.item()
 
     return epoch_loss / len(iterator)
@@ -145,8 +154,8 @@ def evaluate(model, iterator, criterion):
             src = batch[0]
             trg = batch[1]
 
-            src = src.type(torch.LongTensor)
-            trg = trg.type(torch.LongTensor)
+            src = src.type(torch.LongTensor).to(device)
+            trg = trg.type(torch.LongTensor).to(device)
 
             output, _ = model(src, trg[:, :-1])
 
@@ -207,6 +216,8 @@ for epoch in range(N_EPOCHS):
             torch.save(model.state_dict(), 'translate-model-eng-hin-extra-train.pt')
 
     print(f'Epoch: {epoch + 1:02} | Time: {epoch_mins}m {epoch_secs}s')
-    print(f'\tTrain Loss: {train_loss:.3f} | Train PPL: {math.exp(train_loss):7.3f}')
-    print(f'\t Val. Loss: {valid_loss:.3f} |  Val. PPL: {math.exp(valid_loss):7.3f}')
-'''
+    print(f'\tTrain Loss: {train_loss:.3f}')
+    print(f'\t Val. Loss: {valid_loss:.3f}')
+    # print(f'\tTrain Loss: {train_loss:.3f} | Train PPL: {math.exp(train_loss):7.3f}')
+    # print(f'\t Val. Loss: {valid_loss:.3f} |  Val. PPL: {math.exp(valid_loss):7.3f}')
+

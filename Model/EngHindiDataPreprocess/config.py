@@ -1,21 +1,22 @@
 # Just for not producing error Need to Remove SRC & TRG with corr. value during Data Pre-Processing:
 
-INPUT_DIM = 25616      # Not used here value to be modified
-OUTPUT_DIM = 37835     # Not used here value to be modified
+INPUT_DIM = 25616
+OUTPUT_DIM = 37835
 EMB_DIM = 256
 HID_DIM = 512  # each conv. layer has 2 * hid_dim filters
+# Make 12 GCNN Blocks for Language Translation:
 ENC_LAYERS = 7  # number of conv. blocks / layers in encoder
 DEC_LAYERS = 7  # number of conv. blocks / layers in decoder
 ENC_KERNEL_SIZE = 3  # must be odd!
 DEC_KERNEL_SIZE = 3  # can be even or odd
 ENC_DROPOUT = 0.25
 DEC_DROPOUT = 0.25
-BATCH_SIZE = 64
+BATCH_SIZE = 128
 
 MAX_LENGTH = 61
 
 # Model Train Parameters
-EPOCH = 150
+EPOCH = 25
 Learning_Rate = 0.001
 
 # Setting up special Tokens

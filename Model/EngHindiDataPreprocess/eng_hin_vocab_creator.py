@@ -174,11 +174,12 @@ def max_length_updator(seq: list):
 def padding_seq(seq: list):
     global max_length
 
+    new_seq = list()
     for idx in range(len(seq)):
         padding = [config.PAD_TOKEN_IDX]*int(max_length - len(seq[idx]))
-        seq[idx] = seq[idx] + padding
+        new_seq.append(seq[idx] + padding)
 
-    return seq
+    return new_seq
 
 
 # Sequence Tokens Convert to Integer Form
@@ -190,8 +191,8 @@ max_length_updator(ENG_DATA)
 max_length_updator(HIN_DATA)
 
 # Adding Padding to Dataset
-ENG_DATA = padding_seq(ENG_DATA)
-HIN_DATA = padding_seq(HIN_DATA)
+ENG_DATA_PADDED = padding_seq(ENG_DATA)
+HIN_DATA_PADDED = padding_seq(HIN_DATA)
 
 print('Data Conversion to Integer Done...')
 

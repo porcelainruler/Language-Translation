@@ -15,7 +15,6 @@ def translate_sentence(sentence, model, device, max_len=50):
     # src_indexes = [src_field.vocab.stoi[token] for token in tokens]
 
     src_tensor = torch.LongTensor(tokens).unsqueeze(0).to(device)
-    print(src_tensor)
 
     with torch.no_grad():
         encoder_conved, encoder_combined = model.encoder(src_tensor)
