@@ -4,4 +4,5 @@
 
 
 ## Future Works:
-1. BERT-base model is currently under progress for performance improvement.  
+1. BERT-base model is completed. Training BERT-base is left.
+2. Web-App Frontend and Backend for Language Translation is currently being done parallelly in separate repo. 
